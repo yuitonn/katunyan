@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket HP Test</title>
+    <title>HP Management</title>
     <script src="{{ mix('/js/app.js') }}" defer></script>
 </head>
 <body>
@@ -15,7 +15,14 @@
 </body>
 <script>
     function reduceHP(userId) {
-        fetch(`/reduce-hp/${userId}`);
+        fetch(`/reduce-hp`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ userId: userId })
+        });
     }
 </script>
 </html>

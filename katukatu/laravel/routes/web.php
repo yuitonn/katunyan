@@ -21,7 +21,8 @@ use App\Http\Controllers\HPController;
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/reduce-hp/{userId}', [HPController::class, 'reduceHP'])->name('reduce-hp');
+    Route::post('/reduce-hp', [HPController::class, 'homeHP'])->name('home-hp');
+    Route::get('/hp-management', [HPController::class, 'reduceHp'])->name('reduce-Hp');
 });
 
 
