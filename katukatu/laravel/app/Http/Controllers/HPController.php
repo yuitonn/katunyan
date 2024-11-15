@@ -8,25 +8,32 @@ class HPController extends Controller
 {
     public function homeHP()
     {
-        $user = auth()->user(); // 現在ログイン中のユーザー
-        $user->hp = max(0, $user->hp - 10); // HPを10減少（0未満にはならない）
-        $user->save();
+        // 全ユーザーを取得（ビューで表示用）
+        $users = User::all();
+
+        // 現在ログイン中のユーザーのHPを減少
+        $currentUser = auth()->user();
+        $currentUser->hp = max(0, $currentUser->hp - 10); // HPを10減少（0未満にはならない）
+        $currentUser->save();
 
         // HP変更イベントをブロードキャスト
-        event(new HPChanged($user->id, $user->hp));
+        event(new HPChanged($currentUser->id, $currentUser->hp));
 
-        return view('hp', ['user' => $user]);
+        // ビューに全ユーザーのデータを渡す
+        return view('hp', ['users' => $users]);
     }
     
-    public function reduceHP()
+    public function reduceHP(Request $request)
     {
-        $user = auth()->user(); // 現在ログイン中のユーザー
+        $userId = $request->input('userId'); // リクエストからユーザーIDを取得
+        $user = User::findOrFail($userId); // 該当ユーザーを取得
+
         $user->hp = max(0, $user->hp - 10); // HPを10減少（0未満にはならない）
         $user->save();
 
         // HP変更イベントをブロードキャスト
         event(new HPChanged($user->id, $user->hp));
 
-        return response()->json(['hp' => $user->hp]);
+        return response()->json(['hp' => $user->hp]); // 新しいHPをJSONで返す
     }
 }

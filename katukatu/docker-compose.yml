@@ -13,7 +13,7 @@ services:
       - laravel
     depends_on:
       - db
-      - node # Node.jsの依存関係を追加
+      - node
 
   webserver:
     image: nginx:alpine
@@ -38,6 +38,11 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./laravel:/var/www/html
+    ports:
+      - "5173:5173" # Viteのポートを公開
+    environment:
+      - HOST=0.0.0.0 # 外部アクセスを許可
+      - PORT=5173    # 固定ポートを指定
     networks:
       - laravel
 

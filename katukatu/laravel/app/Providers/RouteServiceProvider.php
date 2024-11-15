@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/reduce-hp/{userId}';
+    public const HOME = '/hp-management';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.

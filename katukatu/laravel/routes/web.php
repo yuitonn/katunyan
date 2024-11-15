@@ -18,11 +18,12 @@ use App\Http\Controllers\HPController;
 
 
 
-
-
 Route::middleware(['auth'])->group(function () {
-    Route::post('/reduce-hp', [HPController::class, 'homeHP'])->name('home-hp');
-    Route::get('/hp-management', [HPController::class, 'reduceHp'])->name('reduce-Hp');
+    // HP管理画面（GET: ページ表示）
+    Route::get('/hp-management', [HPController::class, 'homeHP'])->name('home-hp');
+
+    // HPを減らす処理（POST: API用）
+    Route::post('/reduce-hp', [HPController::class, 'reduceHP'])->name('reduce-hp');
 });
 
 

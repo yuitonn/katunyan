@@ -8,12 +8,17 @@
 </head>
 <body>
     <h1>HP Management</h1>
-    <div>
-        <p id="user-{{ auth()->user()->id }}-hp">HP: {{ auth()->user()->hp }}</p>
-        <button onclick="reduceHP({{ auth()->user()->id }})">Reduce My HP</button>
+    <div id="user-list">
+        @foreach ($users as $user)
+            <div id="user-{{ $user->id }}">
+                <p>{{ $user->name }}'s HP: <span id="user-{{ $user->id }}-hp">{{ $user->hp }}</span></p>
+                <button onclick="reduceHP({{ $user->id }})">Reduce {{ $user->name }}'s HP</button>
+            </div>
+        @endforeach
     </div>
 </body>
 <script>
+    // HPを減少させる処理
     function reduceHP(userId) {
         fetch(`/reduce-hp`, {
             method: 'POST',
@@ -22,7 +27,22 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ userId: userId })
+        }).catch(error => {
+            console.error('Error reducing HP:', error);
         });
     }
+
+    // Laravel Echoを使ってリアルタイム更新をリッスン
+    window.Echo.channel('hp-channel')
+        .listen('HPChanged', (e) => {
+            const userId = e.userId;
+            const hp = e.hp;
+
+            // 対象ユーザーのHPをリアルタイム更新
+            const hpElement = document.querySelector(`#user-${userId}-hp`);
+            if (hpElement) {
+                hpElement.textContent = hp;
+            }
+        });
 </script>
 </html>
